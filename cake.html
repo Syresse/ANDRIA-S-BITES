@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Cake</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <h1 class="brand">ANDRIA'S BITES</h1>
+</nav>
+
+<div class="order-container">
+  <h2>Order Your Cake</h2>
+
+ <label>Size</label>
+<select id="size">
+  <option value="">Select a size</option>
+</select>
+
+<label>Flavour</label>
+<select id="flavor">
+  <option value="">Select Flavour</option>
+  <option value="Vanilla">Vanilla</option>
+  <option value="Red Velvet">Red Velvet</option>
+  <option value="Chocolate">Chocolate</option>
+</select>
+
+<label>Special Option (Optional)</label>
+<select id="special">
+  <option value="">None</option>
+</select>
+
+
+  <label>Message on Cake</label>
+  <textarea id="message"></textarea>
+
+  <label>Your Name</label>
+  <input type="text" id="name">
+
+  <label>Phone</label>
+  <input type="tel" id="phone">
+
+  <label>Delivery Date</label>
+  <input type="date" id="date">
+
+    <div class="price">
+    Total: GHS <span id="total">0</span>
+    </div>
+
+  <div class="payment-note">
+    Payment details for payment shall be given after order is confirmed via WhatsApp.
+  </div>
+
+  <button class="btn" onclick="sendOrder()">Place Order</button>
+</div>
+<script src="data.js"></script>
+<script src="cake-script.js"></script>
+
+<script>
+const cakeData = products.find(p => p.type === "cake");
+
+const sizeSelect = document.getElementById("size");
+const flavorSelect = document.getElementById("flavor");
+const specialSelect = document.getElementById("special");
+const totalDisplay = document.getElementById("total");
+
+// Populate size options
+Object.keys(cakeData.sizes).forEach(size => {
+  const option = document.createElement("option");
+  option.value = size;
+  option.textContent = size;
+  sizeSelect.appendChild(option);
+});
+
+// Populate special options
+Object.keys(cakeData.special).forEach(type => {
+  const option = document.createElement("option");
+  option.value = type;
+  option.textContent = type;
+  specialSelect.appendChild(option);
+});
+
+// Update price
+function updatePrice() {
+  let total = 0;
+
+  const selectedSize = sizeSelect.value;
+  const selectedFlavor = flavorSelect.value;
+  const selectedSpecial = specialSelect.value;
+
+  if (selectedSpecial !== "") {
+    total = cakeData.special[selectedSpecial];
+  } else if (selectedSize && selectedFlavor) {
+    total = cakeData.sizes[selectedSize][selectedFlavor];
+  }
+
+  totalDisplay.textContent = total;
+}
+
+// Listen for changes
+sizeSelect.addEventListener("change", updatePrice);
+flavorSelect.addEventListener("change", updatePrice);
+specialSelect.addEventListener("change", updatePrice);
+
+// WhatsApp order
+function sendOrder() {
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("delivery").value;
+  const date = document.getElementById("date").value;
+
+  const size = sizeSelect.value;
+  const flavor = flavorSelect.value;
+  const special = specialSelect.value;
+  const price = totalDisplay.textContent;
+
+  let orderDetails = "";
+
+  if (special !== "") {
+    orderDetails = special;
+  } else {
+    orderDetails = `${size} - ${flavor}`;
+  }
+
+  const text = `Hello Andria's Bites 👋%0A%0ACAKE ORDER DETAILS:%0A• ${orderDetails}%0A• Price: GHS ${price}%0A• Delivery Address: ${address}%0A• Delivery Date: ${date}%0A%0ACustomer:%0A${name}%0APhone: ${phone}%0A%0A⚠️ Payment details will be shared after order confirmation.`;
+
+  window.open(`https://wa.me/233201334826?text=${text}`, '_blank');
+}
+</script>
+
+</body>
+</html>
+
+

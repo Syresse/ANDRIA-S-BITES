@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Donuts | Andria's Bites</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css" />
+  <style>
+    .order-container{
+      max-width:600px;
+      margin:4rem auto;
+      background: var(--cream);
+      padding:2.5rem;
+      border-radius:20px;
+      box-shadow:0 15px 35px rgba(59,36,23,0.35);
+    }
+    .order-container h2{
+      text-align:center;
+      margin-bottom:2rem;
+    }
+    label{font-weight:600; display:block; margin-top:1.2rem; color: var(--chocolate-dark);}
+    select, input, textarea{
+      width:100%;
+      padding:0.7rem;
+      margin-top:0.4rem;
+      border-radius:10px;
+      border:1px solid #ccc;
+      font-size:1rem;
+    }
+    .price{
+      margin:1.5rem 0;
+      font-size:1.3rem;
+      font-weight:700;
+      text-align:center;
+    }
+    .note { font-size:0.9rem; color: var(--chocolate-dark); margin-top:0.5rem; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <h1 class="brand">ANDRIA'S BITES</h1>
+</nav>
+
+<div class="order-container">
+  <h2>Donut Order Form</h2>
+
+  <label>
+    <input type="checkbox" id="bulkToggle" /> Bulk / Event Order
+  </label>
+
+  <div id="standardOrder">
+    <label for="package">Select Package</label>
+    <select id="package">
+      <option value="6">5 pcs – GHS 10 </option>
+      <option value="12">12 pcs – GHS 24</option>
+      <option value="24">24 pcs – GHS 48</option>
+    </select>
+    <p class="note">⚠️ Glazed donut extra cost will be communicated after order.</p>
+  </div>
+
+  <div id="bulkOrder" style="display:none;">
+    <label for="bulkQty">Total Donuts</label>
+    <input type="number" id="bulkQty" min="5" placeholder="Enter total number of donuts" />
+    <p class="note">Price per donut: GHS 2 (Glazed extra charged separately)</p>
+  </div>
+
+  <label for="name">Your Name</label>
+  <input type="text" id="name" required />
+
+  <label for="phone">Phone Number</label>
+  <input type="tel" id="phone" required />
+
+  <label for="delivery">Delivery Address</label>
+  <textarea id="delivery" rows="2" placeholder="Street, City, Region" required></textarea>
+
+  <label for="date">Delivery Date</label>
+  <input type="date" id="date" required />
+
+  
+  <p class="payment-note">
+    ⚠️ After submitting your order, you will receive a confirmation message on WhatsApp with payment instructions.
+  </p>
+
+  <a href="#" class="btn" onclick="sendOrder()">Place Order</a>
+</div>
+
+<script>
+  const bulkToggle = document.getElementById('bulkToggle');
+  const standardOrder = document.getElementById('standardOrder');
+  const bulkOrder = document.getElementById('bulkOrder');
+  const packageSelect = document.getElementById('package');
+  const bulkQty = document.getElementById('bulkQty');
+  const total = document.getElementById('total');
+
+  function updateTotal(){
+    if(bulkToggle.checked){
+      const qty = parseInt(bulkQty.value) || 0;
+      total.textContent = qty * 2; // Price per donut for bulk
+    } else {
+      const selectedPackage = packageSelect.options[packageSelect.selectedIndex];
+      total.textContent = selectedPackage.value * (selectedPackage.value == "6" ? 2 : 1); 
+      // first package is 5 pcs => GHS10 (so 2 per donut), rest values already full
+    }
+  }
+
+  bulkToggle.addEventListener('change', () => {
+    if(bulkToggle.checked){
+      standardOrder.style.display = 'none';
+      bulkOrder.style.display = 'block';
+    } else {
+      standardOrder.style.display = 'block';
+      bulkOrder.style.display = 'none';
+    }
+    updateTotal();
+  });
+
+  packageSelect.addEventListener('change', updateTotal);
+  bulkQty.addEventListener('input', updateTotal);
+
+  function sendOrder(){
+    const orderType = bulkToggle.checked 
+      ? `Bulk / Event Order – ${bulkQty.value} donuts`
+      : `Standard Package – ${packageSelect.options[packageSelect.selectedIndex].text}`;
+    const price = total.textContent;
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const delivery = document.getElementById('delivery').value;
+    const date = document.getElementById('date').value;
+
+    const text = `Hello Andria's Bites 👋%0A%0ADONUT ORDER DETAILS:%0A• ${orderType}%0A• Price: GHS ${price}%0A• Delivery Address: ${delivery}%0A• Delivery Date: ${date}%0A%0ACustomer:%0A${name}%0APhone: ${phone}%0A%0A`;
+
+    window.open(`https://wa.me/233201334826?text=${text}`, '_blank');
+  }
+
+  // Initialize total on page load
+  updateTotal();
+</script>
+
+</body>
+</html>

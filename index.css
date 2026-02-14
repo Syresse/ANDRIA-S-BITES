@@ -1,0 +1,296 @@
+
+
+/* ANDRIA'S BITES – Chocolate Theme */
+
+:root {
+  --chocolate-dark: #3b2417;
+  --chocolate: #5a3e36;
+  --chocolate-light: #d9b38c;
+  --mocha: #7a4a2e;
+  --cream: #fff8e7;
+  --caramel: #c58b59;
+  --white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Playfair Display', serif;
+  background-color: var(--cream);
+  color: var(--chocolate-dark);
+  line-height: 1.6;
+}
+
+/* NAVBAR */
+.navbar {
+  background: linear-gradient(90deg, var(--chocolate-dark), var(--mocha));
+  padding: 2.2rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.brand {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.8rem;
+  color: var(--cream);
+  letter-spacing: 3px;
+  margin: 0;
+  text-align: center;
+}
+
+/* HERO SECTION */
+.hero {
+  height: 90vh;
+  background: 
+    linear-gradient(rgba(59,36,23,0.5), rgba(59,36,23,0.5)),
+    url('image/background_pastry_image.jpg') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream);
+  text-align: center;
+  position: relative;
+  padding: 0 1rem;
+}
+
+.hero-overlay {
+  background: rgba(59,36,23,0.35);
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  max-width: 700px;
+}
+
+.hero-overlay h2 {
+  font-size: 3rem;
+  font-family: 'Dancing Script', cursive;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+
+.hero-overlay p {
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* PRODUCTS SECTION */
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 4rem 2rem;
+  justify-items: center;
+}
+
+.card {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  cursor: pointer;
+}
+.products-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.card h3 {
+  font-size: 1.8rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.card p {
+  padding: 0 1.2rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* ORDER BUTTON */
+.btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: var(--chocolate);
+  color: var(--cream);
+  text-decoration: none;
+  border-radius: 40px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: background 0.3s ease, transform 0.25s ease;
+}
+
+.btn:hover {
+  background: var(--caramel);
+  transform: scale(1.08);
+}
+.order_btn{
+    padding-bottom: 2rem 2rem;
+}
+/* ===== ORDER FORM STYLING ===== */
+
+.order-container {
+  max-width: 500px;
+  margin: 60px auto;
+  background: #fff8f3;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.order-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-family: "Playfair Display", serif;
+  color: #5a2d0c;
+}
+
+.order-container label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #5a2d0c;
+}
+
+.order-container input,
+.order-container select,
+.order-container textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.order-container textarea {
+  resize: none;
+}
+
+.price {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #8b0000;
+  text-align: center;
+}
+
+.payment-note {
+  margin-top: 15px;
+  font-size: 13px;
+  background: #ffe6d5;
+  padding: 10px;
+  border-left: 4px solid #8b0000;
+  border-radius: 6px;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: #5a2d0c;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #8b0000;
+}
+
+/* POPUP */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(59,36,23,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: var(--chocolate-light);
+  color: var(--cream);
+  padding: 2rem;
+  border-radius: 20px;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+#popup-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--chocolate-dark);
+  color: var(--cream);
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .brand {
+    font-size: 2rem;
+  }
+
+  .hero-overlay h2 {
+    font-size: 2.2rem;
+  }
+
+  .products {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .card img {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-overlay h2 {
+    font-size: 1.8rem;
+  }
+}

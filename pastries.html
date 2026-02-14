@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Pastries | Andria's Bites</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css" />
+  <style>
+    .order-container{
+      max-width:600px;
+      margin:4rem auto;
+      background: var(--cream);
+      padding:2.5rem;
+      border-radius:20px;
+      box-shadow:0 15px 35px rgba(59,36,23,0.35);
+    }
+    .order-container h2{
+      text-align:center;
+      margin-bottom:2rem;
+    }
+    label{font-weight:600; display:block; margin-top:1.2rem; color: var(--chocolate-dark);}
+    select, input, textarea{
+      width:100%;
+      padding:0.7rem;
+      margin-top:0.4rem;
+      border-radius:10px;
+      border:1px solid #ccc;
+      font-size:1rem;
+    }
+    .price{
+      margin:1.5rem 0;
+      font-size:1.3rem;
+      font-weight:700;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <h1 class="brand">ANDRIA'S BITES</h1>
+</nav>
+
+<div class="order-container">
+  <h2>Pastries Order Form</h2>
+
+  <label>
+    <input type="checkbox" id="bulkToggle" /> Bulk / Event Order
+  </label>
+
+  <div id="standardOrder">
+    <label for="pastryType">Select Pastry</label>
+    <select id="pastryType">
+      <option value="5">Springroll – GHS 5</option>
+      <option value="7">Samosa – GHS 7</option>
+      <option value="7">Rockcake – GHS 7</option>
+      <option value="15">Pie – GHS 15</option>
+    </select>
+
+    <label for="quantity">Quantity</label>
+    <input type="number" id="quantity" min="1" value="1" />
+  </div>
+
+  <div id="bulkOrder" style="display:none;">
+    <label for="bulkQty">Total Quantity</label>
+    <input type="number" id="bulkQty" min="10" placeholder="Enter total quantity" />
+    <p style="font-size:0.9rem; color: var(--chocolate-dark);">Price per item depends on selection</p>
+  </div>
+
+  <label for="name">Your Name</label>
+  <input type="text" id="name" required />
+
+  <label for="phone">Phone Number</label>
+  <input type="tel" id="phone" required />
+
+  <label for="delivery">Delivery Address</label>
+  <textarea id="delivery" rows="2" placeholder="Street, City, Region" required></textarea>
+
+  <label for="date">Delivery Date</label>
+  <input type="date" id="date" required />
+
+  <div class="price">Total: GHS <span id="total">5</span></div>
+  <p class="payment-note">
+    ⚠️ After submitting your order, you will receive a confirmation message on WhatsApp with payment instructions.
+  </p>
+
+  <a href="#" class="btn" onclick="sendOrder()">Place Order</a>
+</div>
+
+<script>
+  const bulkToggle = document.getElementById('bulkToggle');
+  const standardOrder = document.getElementById('standardOrder');
+  const bulkOrder = document.getElementById('bulkOrder');
+  const pastryType = document.getElementById('pastryType');
+  const quantity = document.getElementById('quantity');
+  const bulkQty = document.getElementById('bulkQty');
+  const total = document.getElementById('total');
+
+  function updateTotal(){
+    if(bulkToggle.checked){
+      const qty = parseInt(bulkQty.value) || 0;
+      const pricePerItem = parseInt(pastryType.value) || 0;
+      total.textContent = qty * pricePerItem;
+    } else {
+      const qty = parseInt(quantity.value) || 1;
+      const pricePerItem = parseInt(pastryType.value) || 0;
+      total.textContent = qty * pricePerItem;
+    }
+  }
+
+  bulkToggle.addEventListener('change', () => {
+    if(bulkToggle.checked){
+      standardOrder.style.display = 'none';
+      bulkOrder.style.display = 'block';
+    } else {
+      standardOrder.style.display = 'block';
+      bulkOrder.style.display = 'none';
+    }
+    updateTotal();
+  });
+
+  pastryType.addEventListener('change', updateTotal);
+  quantity.addEventListener('input', updateTotal);
+  bulkQty.addEventListener('input', updateTotal);
+
+  function sendOrder(){
+    const orderType = bulkToggle.checked 
+      ? `Bulk / Event Order – ${bulkQty.value} items of ${pastryType.options[pastryType.selectedIndex].text}`
+      : `Standard Order – ${quantity.value} x ${pastryType.options[pastryType.selectedIndex].text}`;
+    const price = total.textContent;
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const delivery = document.getElementById('delivery').value;
+    const date = document.getElementById('date').value;
+
+    const text = `Hello Andria's Bites 👋%0A%0APASTRIES ORDER DETAILS:%0A• ${orderType}%0A• Price: GHS ${price}%0A• Delivery Address: ${delivery}%0A• Delivery Date: ${date}%0A%0ACustomer:%0A${name}%0APhone: ${phone}%0A%0A`;
+
+    window.open(`https://wa.me/233201334826?text=${text}`, '_blank');
+  }
+
+  // Initialize total on page load
+  updateTotal();
+</script>
+
+</body>
+</html>
+
+
