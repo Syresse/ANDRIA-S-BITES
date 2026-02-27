@@ -91,6 +91,7 @@
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", function() {
   const bulkToggle = document.getElementById('bulkToggle');
   const standardOrder = document.getElementById('standardOrder');
   const bulkOrder = document.getElementById('bulkOrder');
@@ -98,14 +99,20 @@
   const bulkQty = document.getElementById('bulkQty');
   const total = document.getElementById('total');
 
+  // Map of standard package prices
+  const packagePrices = {
+    "6": 10,
+    "12": 24,
+    "24": 48
+  };
+
   function updateTotal(){
     if(bulkToggle.checked){
       const qty = parseInt(bulkQty.value) || 0;
-      total.textContent = qty * 2; // Price per donut for bulk
+      total.textContent = qty * 2; // bulk price per donut
     } else {
-      const selectedPackage = packageSelect.options[packageSelect.selectedIndex];
-      total.textContent = selectedPackage.value * (selectedPackage.value == "5" ? 2 : 1); 
-      // first package is 5 pcs => GHS10 (so 2 per donut), rest values already full
+      const selectedPackage = packageSelect.value;
+      total.textContent = packagePrices[selectedPackage] || 0;
     }
   }
 
@@ -124,47 +131,47 @@
   bulkQty.addEventListener('input', updateTotal);
 
   function sendOrder(){
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const delivery = document.getElementById('delivery').value.trim();
+    const date = document.getElementById('date').value;
 
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const delivery = document.getElementById('delivery').value.trim();
-  const date = document.getElementById('date').value;
-
-  if(!name || !phone || !delivery || !date){
-    alert("Please fill in all required fields.");
-    return;
-  }
-
-  let orderType;
-
-  if(bulkToggle.checked){
-    if(!bulkQty.value){
-      alert("Please enter total donuts for bulk order.");
+    if(!name || !phone || !delivery || !date){
+      alert("Please fill in all required fields.");
       return;
     }
-    orderType = `Bulk / Event Order – ${bulkQty.value} donuts`;
-  } else {
-    orderType = `Standard Package – ${packageSelect.options[packageSelect.selectedIndex].text}`;
-  }
 
-  const message = `Hello Andria's Bites 👋
+    let orderType;
 
-  DONUT ORDER DETAILS:
-  • ${orderType}
+    if(bulkToggle.checked){
+      if(!bulkQty.value){
+        alert("Please enter total donuts for bulk order.");
+        return;
+      }
+      orderType = `Bulk / Event Order – ${bulkQty.value} donuts (GHS 2 each)`;
+    } else {
+      orderType = `Standard Package – ${packageSelect.options[packageSelect.selectedIndex].text}`;
+    }
 
-  Delivery Address: ${delivery}
-  Delivery Date: ${date}
+    const message = `Hello Andria's Bites 👋
 
-  Customer:
-  ${name}
-  Phone: ${phone}`;
+DONUT ORDER DETAILS:
+• ${orderType}
+
+Delivery Address: ${delivery}
+Delivery Date: ${date}
+
+Customer:
+${name}
+Phone: ${phone}`;
 
     const url = `https://wa.me/233201334826?text=${encodeURIComponent(message)}`;
-
     window.open(url, "_blank");
   }
-  // Initialize total on page load
-  updateTotal();
+
+  window.sendOrder = sendOrder;
+  updateTotal(); // initialize total on page load
+});
 </script>
 
 </body>

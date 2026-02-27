@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Order Waffles | Andria's Bites</title>
   <link rel="stylesheet" href="index.css" />
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="favicon" type="image/png" href="favicon.png">
   <style>
     .order-container{
       max-width:600px;
@@ -98,27 +98,41 @@ document.addEventListener("DOMContentLoaded", function() {
   const bulkQty = document.getElementById("bulkQty");
   const total = document.getElementById("total");
 
-  // Populate dropdown with data attributes
+  // --- Populate dropdown dynamically ---
+  // First, clear any existing options
+  slicesSelect.innerHTML = '<option value="">Select a preferred package</option>';
+
   waffleData.options.forEach(option => {
     const opt = document.createElement("option");
-    opt.textContent = `${option.slices} slices – GHS ${option.price}`;
-    opt.setAttribute("data-slices", option.slices);
+    opt.textContent = `${option.slices} pcs – GHS ${option.price}`;
+    opt.value = option.slices; // optional, for reference
     opt.setAttribute("data-price", option.price);
     slicesSelect.appendChild(opt);
   });
 
+  // --- Function to update total ---
   function updateTotal() {
-    const selectedOption = slicesSelect.options[slicesSelect.selectedIndex];
-    const pricePerUnit = parseInt(selectedOption.getAttribute("data-price"));
+    let pricePerUnit = 0;
+    let qty = 0;
 
     if (bulkToggle.checked) {
-      const qty = parseInt(bulkQty.value) || 0;
+      // Bulk order
+      qty = parseInt(bulkQty.value) || 0;
+
+      // Use selected package price if any, otherwise first package price
+      const selectedOption = slicesSelect.options[slicesSelect.selectedIndex];
+      pricePerUnit = parseInt(selectedOption?.getAttribute("data-price")) || 0;
+
       total.textContent = qty * pricePerUnit;
     } else {
+      // Standard order
+      const selectedOption = slicesSelect.options[slicesSelect.selectedIndex];
+      pricePerUnit = parseInt(selectedOption?.getAttribute("data-price")) || 0;
       total.textContent = pricePerUnit;
     }
   }
 
+  // --- Event listeners ---
   bulkToggle.addEventListener('change', () => {
     if (bulkToggle.checked){
       standardOrder.style.display = 'none';
@@ -133,13 +147,10 @@ document.addEventListener("DOMContentLoaded", function() {
   slicesSelect.addEventListener('change', updateTotal);
   bulkQty.addEventListener('input', updateTotal);
 
+  // --- Send order to WhatsApp ---
   function sendOrder() {
-
-    const packageSelect = document.getElementById("package");
-    const selectedText = packageSelect.options[packageSelect.selectedIndex].text;
-
-    const bulkToggle = document.getElementById("bulkToggle");
-    const bulkQty = document.getElementById("bulkQty");
+    const packageSelect = slicesSelect;
+    const selectedText = packageSelect.options[packageSelect.selectedIndex]?.text || "";
 
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
@@ -158,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
         alert("Please enter bulk quantity.");
         return;
       }
-      orderDetails = `Bulk Order – ${bulkQty.value} slices`;
+      orderDetails = `Bulk Order – ${bulkQty.value} slices (Price per slice: GHS ${parseInt(packageSelect.options[packageSelect.selectedIndex]?.getAttribute("data-price") || 0)})`;
     } else {
       if (!packageSelect.value) {
         alert("Please select a package.");
@@ -169,22 +180,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const message = `Hello Andria's Bites 👋
 
-  WAFFLE ORDER DETAILS:
-  • ${orderDetails}
-  • Delivery Address: ${delivery}
-  • Delivery Date: ${date}
+WAFFLE ORDER DETAILS:
+• ${orderDetails}
+• Delivery Address: ${delivery}
+• Delivery Date: ${date}
 
-  Customer:
-  ${name}
-  Phone: ${phone}`;
+Customer:
+${name}
+Phone: ${phone}`;
 
     const url = `https://wa.me/233201334826?text=${encodeURIComponent(message)}`;
-
     window.open(url, "_blank");
   }
 
   window.sendOrder = sendOrder;
-  updateTotal(); // initialize total
+
+  // --- Initialize total ---
+  updateTotal();
 });
 </script>
 </body>

@@ -39,9 +39,12 @@ const products = [
     image: 'image/waffle_image.jpg',
     description: 'Golden, fluffy waffles.',
     available: true,
-    options: [
-      { quantity: 3, price: 15 }
+     options: [
+      { slices: 3, price: 10 },
+      { slices: 12, price: 40 },
+      { slices: 24, price: 80 }
     ]
+    
   },
 
 
