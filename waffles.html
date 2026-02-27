@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Order Waffles | Andria's Bites</title>
   <link rel="stylesheet" href="index.css" />
-  <link rel="favicon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
     .order-container{
       max-width:600px;
@@ -81,7 +81,7 @@
   <p class="payment-note">
     ⚠️ After submitting your order, you will receive a confirmation message on WhatsApp with payment instructions.
   </p>
-
+  <p class="price">Total: GHS <span id="total">0</span></p>
  <a href="#" class="btn" onclick="event.preventDefault(); sendOrder();">Place Order</a>
 
 </div>
@@ -91,7 +91,7 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   const waffleData = products.find(p => p.type === "waffle");
-  const slicesSelect = document.getElementById("slices");
+  const slicesSelect = document.getElementById("package");
   const bulkToggle = document.getElementById("bulkToggle");
   const standardOrder = document.getElementById("standardOrder");
   const bulkOrder = document.getElementById("bulkOrder");
@@ -134,20 +134,53 @@ document.addEventListener("DOMContentLoaded", function() {
   bulkQty.addEventListener('input', updateTotal);
 
   function sendOrder() {
-    const selectedOption = slicesSelect.options[slicesSelect.selectedIndex];
-    const slices = selectedOption.getAttribute("data-slices");
-    const price = total.textContent;
-    const orderType = bulkToggle.checked ? 
-      `Bulk / Event Order – ${bulkQty.value} slices` : 
-      `Standard Order – ${slices} slices`;
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const delivery = document.getElementById('delivery').value;
+
+    const packageSelect = document.getElementById("package");
+    const selectedText = packageSelect.options[packageSelect.selectedIndex].text;
+
+    const bulkToggle = document.getElementById("bulkToggle");
+    const bulkQty = document.getElementById("bulkQty");
+
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const delivery = document.getElementById('delivery').value.trim();
     const date = document.getElementById('date').value;
 
-    const text = `Hello Andria's Bites 👋%0A%0AWAFFLE ORDER DETAILS:%0A• ${orderType}%0A• Price: GHS ${price}%0A• Delivery Address: ${delivery}%0A• Delivery Date: ${date}%0A%0ACustomer:%0A${name}%0APhone: ${phone}%0A%0A`;
+    if (!name || !phone || !delivery || !date) {
+      alert("Please fill in all required fields.");
+      return;
+    }
 
-    window.open(`https://wa.me/233201334826?text=${text}`, '_blank');
+    let orderDetails;
+
+    if (bulkToggle.checked) {
+      if (!bulkQty.value) {
+        alert("Please enter bulk quantity.");
+        return;
+      }
+      orderDetails = `Bulk Order – ${bulkQty.value} slices`;
+    } else {
+      if (!packageSelect.value) {
+        alert("Please select a package.");
+        return;
+      }
+      orderDetails = `Standard Order – ${selectedText}`;
+    }
+
+    const message = `Hello Andria's Bites 👋
+
+  WAFFLE ORDER DETAILS:
+  • ${orderDetails}
+  • Delivery Address: ${delivery}
+  • Delivery Date: ${date}
+
+  Customer:
+  ${name}
+  Phone: ${phone}`;
+
+    const url = `https://wa.me/233201334826?text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank");
   }
 
   window.sendOrder = sendOrder;

@@ -42,6 +42,9 @@
   <label>Phone</label>
   <input type="tel" id="phone">
 
+  <label>Delivery Address</label>
+  <textarea id="delivery"></textarea>
+
   <label>Delivery Date</label>
   <input type="date" id="date">
 
@@ -107,9 +110,10 @@ specialSelect.addEventListener("change", updatePrice);
 
 // WhatsApp order
 function sendOrder() {
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const address = document.getElementById("delivery").value;
+
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("delivery").value.trim();
   const date = document.getElementById("date").value;
 
   const size = sizeSelect.value;
@@ -117,17 +121,40 @@ function sendOrder() {
   const special = specialSelect.value;
   const price = totalDisplay.textContent;
 
+  if (!name || !phone || !address || !date) {
+    alert("Please fill in all required fields.");
+    return;
+  }
+
   let orderDetails = "";
 
   if (special !== "") {
     orderDetails = special;
   } else {
+    if (!size || !flavor) {
+      alert("Please select cake size and flavor.");
+      return;
+    }
     orderDetails = `${size} - ${flavor}`;
   }
 
-  const text = `Hello Andria's Bites 👋%0A%0ACAKE ORDER DETAILS:%0A• ${orderDetails}%0A• Price: GHS ${price}%0A• Delivery Address: ${address}%0A• Delivery Date: ${date}%0A%0ACustomer:%0A${name}%0APhone: ${phone}%0A%0A⚠️ Payment details will be shared after order confirmation.`;
+  const message = `Hello Andria's Bites 👋
 
-  window.open(`https://wa.me/233201334826?text=${text}`, '_blank');
+CAKE ORDER DETAILS:
+• ${orderDetails}
+• Price: GHS ${price}
+• Delivery Address: ${address}
+• Delivery Date: ${date}
+
+Customer:
+${name}
+Phone: ${phone}
+
+⚠️ Payment details will be shared after order confirmation.`;
+
+  const url = `https://wa.me/233201334826?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
 }
 </script>
 

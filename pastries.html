@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css" />
-  <link rel="favicon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
     .order-container{
       max-width:600px;
@@ -127,21 +127,48 @@
   quantity.addEventListener('input', updateTotal);
   bulkQty.addEventListener('input', updateTotal);
 
-  function sendOrder(){
-    const orderType = bulkToggle.checked 
-      ? `Bulk / Event Order – ${bulkQty.value} items of ${pastryType.options[pastryType.selectedIndex].text}`
-      : `Standard Order – ${quantity.value} x ${pastryType.options[pastryType.selectedIndex].text}`;
-    const price = total.textContent;
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const delivery = document.getElementById('delivery').value;
-    const date = document.getElementById('date').value;
+  function sendOrder() {
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const delivery = document.getElementById('delivery').value.trim();
+  const date = document.getElementById('date').value;
 
-    const text = `Hello Andria's Bites 👋%0A%0APASTRIES ORDER DETAILS:%0A• ${orderType}%0A• Price: GHS ${price}%0A• Delivery Address: ${delivery}%0A• Delivery Date: ${date}%0A%0ACustomer:%0A${name}%0APhone: ${phone}%0A%0A`;
-
-    window.open(`https://wa.me/233201334826?text=${text}`, '_blank');
+  if (!name || !phone || !delivery || !date) {
+    alert("Please fill in all required fields.");
+    return;
   }
 
+  const selectedPastry = pastryType.options[pastryType.selectedIndex].text;
+  const priceValue = total.textContent;
+
+  let orderType;
+
+  if (bulkToggle.checked) {
+    if (!bulkQty.value) {
+      alert("Please enter total quantity for bulk order.");
+      return;
+    }
+    orderType = `Bulk / Event Order – ${bulkQty.value} items of ${selectedPastry}`;
+  } else {
+    orderType = `Standard Order – ${quantity.value} x ${selectedPastry}`;
+  }
+
+  const message = `Hello Andria's Bites 👋
+
+  PASTRIES ORDER DETAILS:
+  • ${orderType}
+  • Price: GHS ${priceValue}
+  • Delivery Address: ${delivery}
+  • Delivery Date: ${date}
+
+  Customer:
+  ${name}
+  Phone: ${phone}`;
+
+    const url = `https://wa.me/233201334826?text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank");
+  }
   // Initialize total on page load
   updateTotal();
 </script>
