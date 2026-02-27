@@ -40,9 +40,9 @@ const products = [
     description: 'Golden, fluffy waffles.',
     available: true,
      options: [
-      { slices: 3, price: 10 },
-      { slices: 12, price: 40 },
-      { slices: 24, price: 80 }
+      { slices: 1, price: 5 },
+      { slices: 4, price: 20 },
+      { slices: 12, price: 60 }
     ]
     
   },
